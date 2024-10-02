@@ -1,11 +1,9 @@
-// StockWidgetCard.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 
 import { Card, CardHeader, CardContent, CardDescription } from './ui/card';
 import { Input } from './ui/input';
 import { Combobox } from './ui/combobox';
-import { useDebounce } from '../hooks/useDebounce';
 import axios from 'axios';
 
 function StockWidgetCard() {
@@ -13,7 +11,6 @@ function StockWidgetCard() {
   const [comboboxValue, setComboboxValue] = useState(":NASDAQ"); // Default to NASDAQ
   const [stockData, setStockData] = useState(null);  // State to store stock data
   const [error, setError] = useState(null);  // State to store errors
-  const debouncedInputValue = useDebounce(inputValue, 500);  // Debounce input with a delay of 500ms
 
   // Function to fetch stock data
   const fetchStockData = async (symbol) => {
@@ -28,7 +25,6 @@ function StockWidgetCard() {
     };
 
     try {
-      
       const response = await axios.request(options);
       const stockSymbol = response.data.data.symbol.split(':')[0];
 
@@ -42,13 +38,13 @@ function StockWidgetCard() {
     }
   };
 
-  // Fetch stock data when debounced input or market value changes
-  useEffect(() => {
-    if (debouncedInputValue) {
-      const fullSymbol = `${debouncedInputValue}${comboboxValue}`;  // e.g., AAPL:NASDAQ
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      const fullSymbol = `${inputValue}${comboboxValue}`;  // e.g., AAPL:NASDAQ
       fetchStockData(fullSymbol);  // Call the API function with the combined symbol
+      setInputValue("");
     }
-  }, [debouncedInputValue, comboboxValue]);  // Re-run effect when either changes
+  };
 
   return (
     <Card className="w-full max-w-[400px] mb-20">
@@ -63,6 +59,7 @@ function StockWidgetCard() {
           placeholder="Enter Stock Symbol"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}  // Update input value on change
+          onKeyDown={handleKeyPress}  // Call handleKeyDown when a key is pressed
         />
         {stockData && (
           <div className="mt-4">
@@ -79,7 +76,6 @@ function StockWidgetCard() {
                 >
                   {stockData.data.change} (
                   {Math.abs(stockData.data.change_percent)}%)
-
                 </CardDescription>
 
                 {stockData.data.change_percent > 0 ? (
@@ -91,6 +87,7 @@ function StockWidgetCard() {
             </div>
           </div>
         )}
+        {/* Uncomment the following block if you want to display errors */}
         {/* {error && (
           <div className="mt-4 text-red-500">
             <p>Error: {error}</p>
