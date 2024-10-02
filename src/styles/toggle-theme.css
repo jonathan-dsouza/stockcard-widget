@@ -1,0 +1,49 @@
+.theme-toggle {
+  --size: 0.9rem;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 999px;
+  transition: all 400ms;
+  background: none;
+  border: none;
+  padding: 0;
+  box-shadow: inset calc(var(--size) * 0.45) calc(var(--size) * -0.25) 0;
+  color: #ffffff;
+  position: relative;
+}
+
+.theme-toggle::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 30%;
+  width: 4rem;
+  height: 5rem;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.theme-toggle[aria-pressed="false"] {
+  --ray-size: calc(var(--size) * -0.4);
+  --offset-orthogonal: calc(var(--size) * 0.75);
+  --offset-diagonal: calc(var(--size) * 0.55);
+  color: #1A1A1A;
+  box-shadow:
+    inset 0 0 0 var(--size),
+    calc(var(--offset-orthogonal) * -1) 0 0 var(--ray-size),
+    var(--offset-orthogonal) 0 0 var(--ray-size),
+    0 calc(var(--offset-orthogonal) * -1) 0 var(--ray-size),
+    0 var(--offset-orthogonal) 0 var(--ray-size),
+    calc(var(--offset-diagonal) * -1) calc(var(--offset-diagonal) * -1) 0 var(--ray-size),
+    var(--offset-diagonal) var(--offset-diagonal) 0 var(--ray-size),
+    calc(var(--offset-diagonal) * -1) var(--offset-diagonal) 0 var(--ray-size),
+    var(--offset-diagonal) calc(var(--offset-diagonal) * -1) 0 var(--ray-size);
+}
+
+/* .theme-toggle[aria-pressed="true"] {
+  box-shadow: none;
+} */
