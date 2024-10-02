@@ -1,0 +1,21 @@
+{
+    "status": "OK",
+    "request_id": "00a30cdf-d286-469f-bc4d-a4e5a5d11dbb",
+    "data": {
+        "symbol": "AAPL:NASDAQ",
+        "name": "Apple Inc",
+        "type": "stock",
+        "price": 227.225,
+        "open": 225.89,
+        "high": 227.33,
+        "low": 223.02,
+        "volume": 24343978,
+        "previous_close": 226.21,
+        "change": 1.015,
+        "change_percent": 0.4487,
+        "pre_or_post_market": 225.9,
+        "pre_or_post_market_change": -1.35,
+        "pre_or_post_market_change_percent": -0.5941,
+        "last_update_utc": "2024-10-02 19:38:27"
+    }
+}
