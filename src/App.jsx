@@ -1,12 +1,12 @@
-// App.jsx
 import React from "react";
 import './App.css';
 import { Nav } from './components/ui/Nav';
-import StockWidgetCard from './components/StockWidgetCard';  // Adjust path as needed
-import { useTheme } from './hooks/useTheme';  // Use custom hook for theme
+import StockWidgetCard from './components/StockWidgetCard';
+import { useTheme } from './hooks/useTheme';
+import { Toaster } from "./components/ui/sonner";  // Import Sonner's Toaster component
 
 function App() {
-  const { theme, toggleTheme } = useTheme();  // Manage theme with custom hook
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="App">
@@ -14,6 +14,7 @@ function App() {
       <div className="flex flex-col justify-center items-center min-h-[calc(100vh-4rem)] px-4">
         <StockWidgetCard />
       </div>
+      <Toaster duration={10000000} /> 
     </div>
   );
 }

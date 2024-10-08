@@ -1,10 +1,10 @@
 "use client"
 
-import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
+import * as React from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -12,32 +12,42 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
 const markets = [
   {
     value: ":NASDAQ",
     label: "NASDAQ",
+    currency: "USD",
   },
   {
-    value: ":BSE",
+    value: ":BOM",
     label: "BSE",
+    currency: "INR",
   },
   {
     value: ":NSE",
     label: "NSE",
+    currency: "INR",
   }
-]
+];
 
-export function Combobox() {
-  // Set the default value to "NASDAQ"
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState(":NASDAQ")  // Default to NASDAQ
+export function Combobox({ value, onChange }) {
+  const [open, setOpen] = React.useState(false);
+
+  const handleSelect = (currentValue) => {
+    const selectedMarket = markets.find((market) => market.value === currentValue);
+    if (selectedMarket) {
+      setOpen(false);
+      // Pass both the selected value and its associated currency back to the parent
+      onChange(selectedMarket.value, selectedMarket.currency);
+    }
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -64,11 +74,7 @@ export function Combobox() {
                 <CommandItem
                   className="dark:text-[#ffffff]"
                   key={market.value}
-                  value={market.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
-                  }}
+                  onSelect={() => handleSelect(market.value)} // Use the new handler
                 >
                   <Check
                     className={cn(
@@ -84,5 +90,5 @@ export function Combobox() {
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }
