@@ -1,5 +1,5 @@
 import React from "react";
-import '../../styles/toggle-theme.css';
+import '../styles/toggle-theme.css';
 import { ThemeToggle } from "./ThemeToggle";
 
 export const Nav = ({ handleThemeSwitch, theme }) => {

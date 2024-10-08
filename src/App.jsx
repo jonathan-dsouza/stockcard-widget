@@ -1,6 +1,7 @@
 import React from "react";
 import './App.css';
-import { Nav } from './components/ui/Nav';
+import { Nav } from './components/Nav';
+import Footer from './components/Footer';
 import StockWidgetCard from './components/StockWidgetCard';
 import { useTheme } from './hooks/useTheme';
 import { Toaster } from "./components/ui/sonner";  // Import Sonner's Toaster component
@@ -15,6 +16,7 @@ function App() {
         <StockWidgetCard />
       </div>
       <Toaster /> 
+      <Footer />
     </div>
   );
 }
