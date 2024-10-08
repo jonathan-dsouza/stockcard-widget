@@ -3,10 +3,12 @@ import { ArrowUp, ArrowDown, RefreshCcw, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';  // Import the toast function from Sonner
 import UseAnimations from 'react-useanimations';
 import alertCircle from 'react-useanimations/lib/alertCircle';
+import radioButton from 'react-useanimations/lib/radioButton';
 
 import { Card, CardHeader, CardContent, CardDescription } from './ui/card';
 import { Input } from './ui/input';
 import { Combobox } from './ui/combobox';
+import { Skeleton } from './ui/skeleton';
 import axios from 'axios';
 
 function StockWidgetCard() {
@@ -18,9 +20,11 @@ function StockWidgetCard() {
   const [hasValidData, setHasValidData] = useState(false);
   const [refreshInput, setRefreshInputValue] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Function to fetch stock data
   const fetchStockData = async (symbol) => {
+    setIsLoading(true);
     const options = {
       method: 'GET',
       url: 'https://real-time-finance-data.p.rapidapi.com/stock-quote',
@@ -74,6 +78,8 @@ function StockWidgetCard() {
         setError(err.message);
         console.error('Error fetching stock data:', err);
       }
+    } finally {
+      setIsLoading(false);  // Stop loading regardless of outcome
     }
   };
 
@@ -101,7 +107,15 @@ function StockWidgetCard() {
       await fetchStockData(`${refreshInput}`);
       toast.success(
         <div className="flex items-center space-x-2">
-          <CheckCircle className="w-5 h-5 text-green-500" />
+          {/* <CheckCircle className="w-5 h-5 text-green-500" /> */}
+          <UseAnimations
+            animation={radioButton}
+            size={24}
+            strokeColor="green"
+            autoplay={true} 
+            loop={false}
+            speed={1} // Adjust the speed as needed (1 is normal speed)
+          />
           <span>Stock data refreshed successfully!</span>
         </div>
       );
@@ -114,6 +128,7 @@ function StockWidgetCard() {
       }, 300);
     }
   };
+
   return (
     <Card className="w-full max-w-[400px] mb-20">
       <CardHeader>
@@ -144,32 +159,43 @@ function StockWidgetCard() {
             </button>
           )}
         </div>
-        {stockData && (
-          <div className="mt-4 mx-1">
-            <div className='flex flex-row justify-between'>
-              <CardDescription className="font-semibold text-[20px] text-black dark:text-[rgba(255,255,255)]">{stockData.symbol}</CardDescription>
-              <CardDescription className="font-normal text-[16px] text-black dark:text-[rgba(255,255,255)]"> {stockData.currency} {stockData.data.price}</CardDescription>
-            </div>
-
-            <div className='flex flex-row justify-between'>
-              <CardDescription className="font-semibold text-[16px] text-black dark:text-[rgba(255,255,255)]">{stockData.data.name}</CardDescription>
-              <div className="flex flex-row items-center">
-                <CardDescription
-                  className={`font-normal text-[16px] ${stockData.data.change_percent > 0 ? 'text-green-500 dark:text-green-500' : 'text-red-500 dark:text-red-500'}`}
-                >
-                  {stockData.data.change} (
-                  {Math.abs(stockData.data.change_percent)}%)
-                </CardDescription>
-
-                {stockData.data.change_percent > 0 ? (
-                  <ArrowUp className="text-green-500" />
-                ) : (
-                  <ArrowDown className="text-red-500" />
-                )}
+        <div className="mt-4 mx-1">
+          {isLoading ? (
+            <>
+              <div className='flex flex-row justify-between mb-2'>
+                <Skeleton className="h-6 w-20 bg-gray-300 dark:bg-[#121212]" />
+                <Skeleton className="h-6 w-24 bg-gray-300 dark:bg-[#121212]" />
               </div>
-            </div>
-          </div>
-        )}
+              <div className='flex flex-row justify-between'>
+                <Skeleton className="h-5 w-32 bg-gray-300 dark:bg-[#121212]" />
+                <Skeleton className="h-5 w-28 bg-gray-300 dark:bg-[#121212]" />
+              </div>
+            </>
+          ) : stockData ? (
+            <>
+              <div className='flex flex-row justify-between'>
+                <CardDescription className="font-semibold text-[20px] text-black dark:text-[rgba(255,255,255)]">{stockData.symbol}</CardDescription>
+                <CardDescription className="font-normal text-[16px] text-black dark:text-[rgba(255,255,255)]"> {stockData.currency} {stockData.data.price}</CardDescription>
+              </div>
+              <div className='flex flex-row justify-between'>
+                <CardDescription className="font-semibold text-[16px] text-black dark:text-[rgba(255,255,255)]">{stockData.data.name}</CardDescription>
+                <div className="flex flex-row items-center">
+                  <CardDescription
+                    className={`font-normal text-[16px] ${stockData.data.change_percent > 0 ? 'text-green-500 dark:text-green-500' : 'text-red-500 dark:text-red-500'}`}
+                  >
+                    {stockData.data.change} (
+                    {Math.abs(stockData.data.change_percent)}%)
+                  </CardDescription>
+                  {stockData.data.change_percent > 0 ? (
+                    <ArrowUp className="text-green-500" />
+                  ) : (
+                    <ArrowDown className="text-red-500" />
+                  )}
+                </div>
+              </div>
+            </>
+          ) : null}
+        </div>
       </CardContent>
     </Card>
   );

@@ -14,7 +14,7 @@ function App() {
       <div className="flex flex-col justify-center items-center min-h-[calc(100vh-4rem)] px-4">
         <StockWidgetCard />
       </div>
-      <Toaster  /> 
+      <Toaster /> 
     </div>
   );
 }
