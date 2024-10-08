@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { toast } from 'sonner';  // Import the toast function from Sonner
+import UseAnimations from 'react-useanimations';
+import alertCircle from 'react-useanimations/lib/alertCircle';
 
 import { Card, CardHeader, CardContent, CardDescription } from './ui/card';
 import { Input } from './ui/input';
@@ -39,17 +41,33 @@ function StockWidgetCard() {
     } catch (err) {
       if (err.response && err.response.status === 401) {
         const errorMessage = err.response.data.message;
-  
+    
         if (errorMessage.includes("exceeded") || errorMessage.includes("Invalid API key")) {
-          toast.error("We reached our Monthly API Limit :(");
+          toast.error(
+            <div className="flex items-center space-x-2">
+              <UseAnimations animation={alertCircle} size={24} strokeColor="red" />
+              <span>We reached our Monthly API Limit :(</span>
+            </div>
+          );
         } else {
-          toast.error("Unauthorized request. Please check your API key.");
+          toast.error(
+            <div className="flex items-center space-x-2">
+              <UseAnimations animation={alertCircle} size={24} strokeColor="red" />
+              <span>Unauthorized request. Please check your API key.</span>
+            </div>
+          );
         }
       } else {
+        toast.error(
+          <div className="flex items-center space-x-2">
+            <UseAnimations animation={alertCircle} size={24} strokeColor="red" />
+            <span>Error fetching stock data. Please try again later.</span>
+          </div>
+        );
         setError(err.message);
         console.error('Error fetching stock data:', err);
       }
-    }  
+    }
   };
 
   const handleKeyPress = (event) => {
@@ -57,6 +75,9 @@ function StockWidgetCard() {
       const fullSymbol = `${inputValue}${comboboxValue}`;  // e.g., AAPL:NASDAQ
       fetchStockData(fullSymbol);
       setInputValue(""); // Clear input after fetching
+      
+      // Remove focus from the input field to hide the keyboard
+      event.target.blur();
     }
   };
 
